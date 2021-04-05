@@ -17,6 +17,7 @@ class Pawn(Pieces):
         yDiff = y-self.row
         target = self.tiles.list[y][x]
         if xDiff == 0:  # Moving normally
+            if self.isBetween(y, x, self): return False
             if type(target) is str:
                 if self.color == (-0.5*yDiff)+0.5: return True
                 elif (yDiff == 2 and self.color == 0 and self.row == 1) or (yDiff == -2 and self.color == 1 and self.row == 6): return True

@@ -14,7 +14,7 @@ class Rook(Pieces):
         self.hasMoved = False
 
     def isLegalMove(self, y, x):
-        if self.row == y or self.col == x: return True
+        if not self.isBetween(y, x, self) and (self.row == y or self.col == x): return True
         return False
 
     def render(self):

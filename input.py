@@ -3,22 +3,21 @@ import math
 
 
 def movePiece(tiles, selected, col, row):
-    taking = False
-    if type(tiles.list[col][row]) is not str: taking = True
-    tiles.moves.append(tiles.pieces.moveToPiece(tiles.list[tiles.selectedTile[0]][tiles.selectedTile[1]], col, row, taking))
-    tiles.list[col][row] = selected  # Set selected piece to the new tile
-    tiles.list[col][row].row, tiles.list[col][row].col = col, row  # Set the piece's col and row of the new tile
-    tiles.list[tiles.selectedTile[0]][tiles.selectedTile[1]] = ''  # Clear old tile
+    tiles.moves.append(tiles.pieces.notation(tiles.list[tiles.selectedTile[0]][tiles.selectedTile[1]], col, row, type(tiles.list[col][row]) is not str))
+    tiles.pieces.movePiece(selected, tiles, col, row)
     tiles.colorToMove = tiles.colorToMove*-1 + 1
+    if tiles.flipOnEveryMove: tiles.flipped = bool(-1 * tiles.flipped + 1)
 
 
 def mousePressed(tiles):
     pos = pygame.mouse.get_pos()
     col, row = tiles.getTile(pos[0], pos[1])
     tiles.selectedTile = [col, row]
+    if tiles.list[col][row] != '': tiles.updateValidMoves(tiles.list[col][row], col, row)
 
 
 def mouseReleased(tiles):
+    tiles.validMoves = [[False for j in range(8)] for i in range(8)]
     pos = pygame.mouse.get_pos()  # Pos of mouse
     col, row = tiles.getTile(pos[0], pos[1])  # Coords of selected tile
     selected = tiles.list[tiles.selectedTile[0]][tiles.selectedTile[1]]  # Selected tile
@@ -43,5 +42,12 @@ def eventCheck(tiles):
             if event.key == pygame.K_c:
                 print(tiles.moves)
                 print(f'Moves: {math.floor(len(tiles.moves)/2)}')
+            elif event.key == pygame.K_f:
+                tiles.flipOnEveryMove = bool(-1*(tiles.flipped-1))
+                tiles.flipped = tiles.colorToMove
+            elif event.key == pygame.K_s:
+                table = [[tiles.pieces.pieceToName(x) for i,x in enumerate(tiles.list[j])] for j in range(8)]
+                for i,x in enumerate(table):
+                    print(x)
 
     return True

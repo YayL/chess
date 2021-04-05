@@ -13,6 +13,7 @@ class Queen(Pieces):
         self.color = color
 
     def isLegalMove(self, y, x):
+        if self.isBetween(y, x, self): return False
         if self.row == y or self.col == x: return True
         if y - self.row == x - self.col or y - self.row == -1 * (x - self.col): return True
         return False

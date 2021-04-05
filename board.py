@@ -1,3 +1,5 @@
+import pygame
+
 from pieces.pieces import Pieces
 from pieces.pawn import Pawn
 from pieces.bishop import Bishop
@@ -11,11 +13,14 @@ class Board:
 
     def __init__(self, win, tiles, width, height):
         self.win = win
+        self.overlay = pygame.Surface((width,height), pygame.SRCALPHA)
         self.tiles = tiles
         self.pieces = Pieces(win)
         self.width = width
         self.height = height
         self.colorToMove = 0
+        self.flipped = False
+        self.flipOnEveryMove = False
         self.moves = []
 
     def setupBoard(self):

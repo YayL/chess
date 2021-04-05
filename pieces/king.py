@@ -13,10 +13,26 @@ class King(Pieces):
         self.color = color
         self.hasMoved = False
 
+    def castle(self, y, x, diff):
+        if diff == 2:  ## Short castle
+            for i in range(1,3):
+                if self.tiles.list[self.row][self.col+i] != '': return False
+            if type(self.tiles.list[self.row][7]).__name__ == 'Rook' and not self.tiles.list[self.row][7].hasMoved:
+                return True
+        else: ## Long castle
+            for i in range(1,4):
+                if self.tiles.list[self.row][self.col-i] != '': return False
+            if type(self.tiles.list[self.row][0]).__name__ == 'Rook' and not self.tiles.list[self.row][0].hasMoved:
+                return True
+        return False
+
     def isLegalMove(self, y, x):
-        if x-self.col <= 1 and y-self.row <= 1:
+        xDiff, yDiff = x-self.col, y-self.row
+        if abs(xDiff) <= 1 and abs(yDiff) <= 1:
             if self.row == y or self.col == x: return True
-            if y - self.row == x - self.col or y - self.row == -1 * (x - self.col): return True
+            if yDiff == xDiff or yDiff == -1 * xDiff: return True
+        elif (xDiff == 2 or xDiff == -2) and yDiff == 0 and not self.hasMoved:
+            return self.castle(y, x, xDiff)
         return False
 
     def render(self):

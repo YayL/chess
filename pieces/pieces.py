@@ -1,6 +1,5 @@
 import os
 import pygame
-import re
 
 
 class Pieces:
@@ -37,10 +36,40 @@ class Pieces:
         self.king = [pygame.image.load(os.path.join('imgs', 'wK.png')),
                      pygame.image.load(os.path.join('imgs', 'bK.png'))]
 
+    def isBetween(self, y, x, p):
+        yDiff, xDiff, isBetween = y - p.row, x - p.col, False
+        p_yInc = int(yDiff / abs(yDiff)) if yDiff != 0 else 0
+        p_xInc = int(xDiff / abs(xDiff)) if xDiff != 0 else 0
+        yInc, xInc = p_yInc, p_xInc
+        diff = yDiff if xDiff == 0 else xDiff if yDiff == 0 else yDiff
+        for i in range(abs(diff) - 1):
+            if y-yInc > 7 or x-xInc > 7: break
+            isBetween = bool(p.tiles.list[abs(y - yInc)][abs(x - xInc)] != '')
+            if isBetween: break
+            yInc, xInc = yInc + p_yInc, xInc + p_xInc
+        return isBetween
+
     xCoords = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
-    def moveToPiece(self, piece, y, x, isTaking):
+    def pieceToName(self, piece):
+        if type(piece) is not str:
+            return type(piece).__name__[0:1] if type(piece).__name__ != 'Knight' else 'N'
+        return ''
+
+    def movePiece(self, piece, tiles, col, row):
+        tiles.list[piece.row][piece.col] = ''  # Clear old tile
+        tiles.list[col][row] = piece  # Set selected piece to the new tile
+        tiles.list[col][row].row, tiles.list[col][row].col = col, row  # Set the piece's col and row of the new tile
+
+    def notation(self, piece, y, x, isTaking):
         returnValue = type(piece).__name__[0:1] if type(piece).__name__ != 'Knight' else 'N'
+        if returnValue == 'K':
+            if x-piece.col == 2:
+                self.movePiece(piece.tiles.list[piece.row][7], piece.tiles, piece.row, 5)
+                return 'O-O'
+            elif x-piece.col == -2:
+                self.movePiece(piece.tiles.list[piece.row][0], piece.tiles, piece.row, 3)
+                return 'O-O-O'
         if returnValue == 'P': returnValue = ''
         if returnValue == '' and isTaking: returnValue += self.xCoords[piece.col]
         if isTaking: returnValue += 'x'
