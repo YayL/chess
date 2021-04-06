@@ -13,11 +13,12 @@ class Board:
 
     def __init__(self, win, tiles, width, height):
         self.win = win
-        self.overlay = pygame.Surface((width,height), pygame.SRCALPHA)
+        self.overlay = pygame.Surface((width,height))
         self.tiles = tiles
         self.pieces = Pieces(win)
         self.width = width
         self.height = height
+        self.previousBoards = []
         self.colorToMove = 0
         self.flipped = False
         self.flipOnEveryMove = False
@@ -39,5 +40,5 @@ class Board:
         for x, arr in enumerate(self.tiles.list):
             for y, val in enumerate(arr):
                 if type(val) is not str:
-                    val.render()
+                    val.render(x, y)
 

@@ -12,15 +12,15 @@ class Knight(Pieces):
         self.tiles = tiles
         self.color = color
 
-    def isLegalMove(self, y, x):
+    def isLegalMove(self, y, x, isMovingPiece=False):
         yDiff = abs(y-self.row)
         xDiff = abs(x-self.col)
         if yDiff == 2 and xDiff == 1: return True
         if yDiff == 1 and xDiff == 2: return True
         return False
 
-    def render(self):
-        x, y = self.tiles.getCoords(self.row, self.col)
+    def render(self, x, y):
+        x, y = self.tiles.getCoords(x, y)
 
         rotImg = pygame.transform.rotate(self.knight[self.color], 0)
         img = self.knight[self.color].get_rect(center=self.knight[self.color].get_rect(topleft=(x+1, y)).center)

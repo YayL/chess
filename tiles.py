@@ -31,18 +31,21 @@ class Tiles(Board):
                 if piece.isLegalMove(y, x):
                     if not (type(self.list[y][x]) is not str and piece.color == self.list[y][x].color):
                         self.validMoves[x][y] = True
-        self.overlay.fill((0,0,0))
+        self.overlay = pygame.Surface((self.width,self.height))
 
     def renderValidMoves(self):
         self.overlay.set_colorkey((0,0,0))
         self.overlay.set_alpha(128)
+        hasValidMoves = False
         for i, x in enumerate(self.validMoves):
             for j, y in enumerate(x):
                 if y:
                     xCoord, yCoord = self.getCoords(j, i)
                     xCoord, yCoord = xCoord + (self.width/(8*2)), yCoord + (self.width/(8*2))-2
-                    pygame.draw.circle(self.overlay, (255, 0, 0), (xCoord, yCoord), int(self.width / (8 * 4)))
-                    self.win.blit(self.overlay, (0, 0))
+                    pygame.draw.circle(self.overlay, (255, 0, 0), (xCoord, yCoord), int(self.width / (8 * 6)))
+                    hasValidMoves = True
+        if hasValidMoves:
+            self.win.blit(self.overlay, (0, 0))
 
     def render(self):
         w, h, inc = int(self.width/8), int(self.height / 8), 0

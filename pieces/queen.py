@@ -12,14 +12,14 @@ class Queen(Pieces):
         self.tiles = tiles
         self.color = color
 
-    def isLegalMove(self, y, x):
+    def isLegalMove(self, y, x, isMovingPiece=False):
         if self.isBetween(y, x, self): return False
         if self.row == y or self.col == x: return True
         if y - self.row == x - self.col or y - self.row == -1 * (x - self.col): return True
         return False
 
-    def render(self):
-        x, y = self.tiles.getCoords(self.row, self.col)
+    def render(self, x, y):
+        x, y = self.tiles.getCoords(x, y)
 
         rotImg = pygame.transform.rotate(self.queen[self.color], 0)
         img = self.queen[self.color].get_rect(center=self.queen[self.color].get_rect(topleft=(x+3, y)).center)

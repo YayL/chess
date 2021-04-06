@@ -14,19 +14,19 @@ class King(Pieces):
         self.hasMoved = False
 
     def castle(self, y, x, diff):
-        if diff == 2:  ## Short castle
+        if diff == 2:  # Short castle
             for i in range(1,3):
                 if self.tiles.list[self.row][self.col+i] != '': return False
             if type(self.tiles.list[self.row][7]).__name__ == 'Rook' and not self.tiles.list[self.row][7].hasMoved:
                 return True
-        else: ## Long castle
+        else:  # Long castle
             for i in range(1,4):
                 if self.tiles.list[self.row][self.col-i] != '': return False
             if type(self.tiles.list[self.row][0]).__name__ == 'Rook' and not self.tiles.list[self.row][0].hasMoved:
                 return True
         return False
 
-    def isLegalMove(self, y, x):
+    def isLegalMove(self, y, x, isMovingPiece=False):
         xDiff, yDiff = x-self.col, y-self.row
         if abs(xDiff) <= 1 and abs(yDiff) <= 1:
             if self.row == y or self.col == x: return True
@@ -35,8 +35,8 @@ class King(Pieces):
             return self.castle(y, x, xDiff)
         return False
 
-    def render(self):
-        x, y = self.tiles.getCoords(self.row, self.col)
+    def render(self, x, y):
+        x, y = self.tiles.getCoords(x, y)
 
         rotImg = pygame.transform.rotate(self.king[self.color], 0)
         img = self.king[self.color].get_rect(center=self.king[self.color].get_rect(topleft=(x+3, y)).center)

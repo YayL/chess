@@ -13,12 +13,12 @@ class Rook(Pieces):
         self.color = color
         self.hasMoved = False
 
-    def isLegalMove(self, y, x):
+    def isLegalMove(self, y, x, isMovingPiece=False):
         if not self.isBetween(y, x, self) and (self.row == y or self.col == x): return True
         return False
 
-    def render(self):
-        x, y = self.tiles.getCoords(self.row, self.col)
+    def render(self, x, y):
+        x, y = self.tiles.getCoords(x, y)
 
         rotImg = pygame.transform.rotate(self.rook[self.color], 0)
         img = self.rook[self.color].get_rect(center=self.rook[self.color].get_rect(topleft=(x+1, y+1)).center)

@@ -12,12 +12,12 @@ class Bishop(Pieces):
         self.tiles = tiles
         self.color = color
 
-    def isLegalMove(self, y, x):
+    def isLegalMove(self, y, x, isMovingPiece=False):
         if not self.isBetween(y, x, self) and (y - self.row == x - self.col or y - self.row == -1*(x - self.col)): return True
         return False
 
-    def render(self):
-        x, y = self.tiles.getCoords(self.row, self.col)
+    def render(self, x, y):
+        x, y = self.tiles.getCoords(x, y)
 
         rotImg = pygame.transform.rotate(self.bishop[self.color], 0)
         img = self.bishop[self.color].get_rect(center=self.bishop[self.color].get_rect(topleft=(x+2, y)).center)
