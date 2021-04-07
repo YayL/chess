@@ -56,19 +56,29 @@ class Pieces:
             return type(piece).__name__[0:1] if type(piece).__name__ != 'Knight' else 'N'
         return ''
 
-    def movePiece(self, piece, tiles, col, row):
-        tiles.list[piece.row][piece.col] = ''  # Clear old tile
-        tiles.list[col][row] = piece  # Set selected piece to the new tile
-        tiles.list[col][row].row, tiles.list[col][row].col = col, row  # Set the piece's col and row of the new tile
+    def movePiece(self, board, piece, col, row, retVal = False):
+        board[piece.row][piece.col] = ''  # Clear old tile
+        board[col][row] = piece  # Set selected piece to the new tile
+        board[col][row].row, board[col][row].col = col, row  # Set the piece's col and row of the new tile
+        if retVal: return board
+
+    def checkIfInCheck(self, piece, xPos, yPos, tiles, king):
+        copiedBoard = [tiles.list[i].copy() for i in range(8)]
+        copiedBoard = self.movePiece(copiedBoard, piece, xPos, yPos, True)
+        for y, val in enumerate(copiedBoard):
+            for x, piece in enumerate(val):
+                if type(piece) is not str and piece.color != king.color and piece.isLegalMove(king.row, king.col):
+                    return True
+        return False
 
     def notation(self, piece, y, x, isTaking):
         returnValue = type(piece).__name__[0:1] if type(piece).__name__ != 'Knight' else 'N'
         if returnValue == 'K':
             if x-piece.col == 2:
-                self.movePiece(piece.tiles.list[piece.row][7], piece.tiles, piece.row, 5)
+                self.movePiece(piece.tiles, piece.tiles.list[piece.row][7], piece.row, 5)
                 return 'O-O'
             elif x-piece.col == -2:
-                self.movePiece(piece.tiles.list[piece.row][0], piece.tiles, piece.row, 3)
+                self.movePiece(piece.tiles, piece.tiles.list[piece.row][0], piece.row, 3)
                 return 'O-O-O'
         if returnValue == 'P': returnValue = ''
         if returnValue == '' and isTaking: returnValue += self.xCoords[piece.col]

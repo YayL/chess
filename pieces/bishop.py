@@ -13,6 +13,7 @@ class Bishop(Pieces):
         self.color = color
 
     def isLegalMove(self, y, x, isMovingPiece=False):
+        #if self.tiles.pieces.checkIfInCheck(self.tiles.kings[self.tiles.list[y][x].color], self.tiles): return False
         if not self.isBetween(y, x, self) and (y - self.row == x - self.col or y - self.row == -1*(x - self.col)): return True
         return False
 
