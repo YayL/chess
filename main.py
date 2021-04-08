@@ -16,7 +16,7 @@ def start(tiles):
     tiles.setupBoard()
     clock = pygame.time.Clock()
     while running:
-        clock.tick(30)
+        clock.tick(15)
         render(tiles)
         running = input.eventCheck(tiles)
 

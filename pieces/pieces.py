@@ -56,19 +56,27 @@ class Pieces:
             return type(piece).__name__[0:1] if type(piece).__name__ != 'Knight' else 'N'
         return ''
 
-    def movePiece(self, board, piece, col, row, retVal = False):
+    def movePiece(self, board, piece, col, row):
+        if type(piece) is str: return
         board[piece.row][piece.col] = ''  # Clear old tile
         board[col][row] = piece  # Set selected piece to the new tile
         board[col][row].row, board[col][row].col = col, row  # Set the piece's col and row of the new tile
-        if retVal: return board
 
-    def checkIfInCheck(self, piece, xPos, yPos, tiles, king):
-        copiedBoard = [tiles.list[i].copy() for i in range(8)]
-        copiedBoard = self.movePiece(copiedBoard, piece, xPos, yPos, True)
-        for y, val in enumerate(copiedBoard):
-            for x, piece in enumerate(val):
-                if type(piece) is not str and piece.color != king.color and piece.isLegalMove(king.row, king.col):
+    def checkIfInCheck(self, piece, xPos, yPos, king, reccursion=False):
+        preY, preX = piece.row, piece.col
+        if type(piece.tiles.list[yPos][xPos]) is str:
+            self.movePiece(piece.tiles.list, piece, yPos, xPos)
+
+        for val in piece.tiles.list:  # Loop through all tiles and check if a piece is able to take the king
+            for p in val:
+                if type(p) is not str and p.color != king.color and p.isLegalMove(king.row, king.col):  # If piece can take the king
+                    self.movePiece(piece.tiles.list, piece, preY, preX)  # Move back piece
+                    if (xPos, yPos) == (p.col, p.row):
+                        if not reccursion and not self.checkIfInCheck(p, xPos, yPos, king, True):  # If that is still check
+                            return False  # If piece can be taken
                     return True
+
+        self.movePiece(piece.tiles.list, piece, preY, preX)  # Move back piece
         return False
 
     def notation(self, piece, y, x, isTaking):
@@ -85,3 +93,9 @@ class Pieces:
         if isTaking: returnValue += 'x'
         returnValue += self.xCoords[x]+str(y+1)
         return returnValue
+
+    def updatePieces(self, tiles):
+        for i, y in enumerate(tiles.list):
+            for j, x in enumerate(y):
+                if x != '':
+                    x.col, x.row = j, i

@@ -9,14 +9,13 @@ def movePiece(tiles, selected, col, row):
                                              (type(selected).__name__ == 'Pawn' and
                                               (row == selected.col+1 or row == selected.col-1))))
 
-    if tiles.pieces.checkIfInCheck(selected, col, row, tiles, tiles.kings[selected.color]):  # Check if person will be in check
+    if tiles.pieces.checkIfInCheck(selected, row, col, tiles.kings[selected.color]):  # Check if person will be in check
         print(1)
         tiles.list = tiles.previousBoards[-1]  # Rollback board
         tiles.moves.pop()  # Remove previous entry in moves stack
-        updatePieces(tiles)
+        tiles.pieces.updatePieces(tiles)
     else:
         tiles.pieces.movePiece(tiles.list, selected, col, row)
-        print(2)
         tiles.previousBoards.append([tiles.list[i].copy() for i in range(8)])  # Add board pos to list
         tiles.colorToMove = tiles.colorToMove*-1 + 1
         if tiles.flipOnEveryMove: tiles.flipped = bool(-1 * tiles.flipped + 1)
@@ -28,7 +27,7 @@ def mousePressed(tiles):
     if tiles.list[col][row] != '' and tiles.list[col][row].color == tiles.colorToMove:
         tiles.selectedTile = [col, row]
         tiles.validMoves = [[False for j in range(8)] for i in range(8)]
-        if tiles.list[col][row] != '': tiles.updateValidMoves(tiles.list[col][row], col, row)
+        if tiles.list[col][row] != '': tiles.updateValidMoves(tiles.list[col][row])
 
 
 def mouseReleased(tiles):
@@ -79,13 +78,6 @@ def eventCheck(tiles):
                 tiles.list = popped
                 tiles.colorToMove = 0 if tiles.colorToMove == 1 else 1
                 tiles.moves.pop()
-                updatePieces(tiles)
+                tiles.pieces.updatePieces(tiles)
 
     return True
-
-
-def updatePieces(tiles):
-    for i, y in enumerate(tiles.list):
-        for j, x in enumerate(y):
-            if x != '':
-                x.col, x.row = j, i
